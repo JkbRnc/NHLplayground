@@ -1,0 +1,4 @@
+Player: /v1/player/{player}/landing
+TeamsStandingsNow: /v1/standings/now
+TeamStatsNow: /v1/club-stats/{team}/now
+Team: /v1/club-stats/{team}/{season}/{game_type}
