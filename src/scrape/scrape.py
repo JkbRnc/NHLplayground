@@ -40,6 +40,13 @@ def scrape_players_team(
     return skaters, goalies
 
 
+def scrape_teams(scraper: NHLScraper) -> list[str]:
+    raw_teams: list[dict] = scraper.scrape_raw(
+        endpoint="TeamsStandingsNow", scrape_args={}
+    )["standings"]
+    return [rt["teamAbbrev"]["default"] for rt in raw_teams]
+
+
 def scrape_players(
     scraper: NHLScraper, season: str, gt: str = "2"
 ) -> (pd.DataFrame, pd.DataFrame):
@@ -53,10 +60,7 @@ def scrape_players(
     Returns:
         pd.Dataframe, pd.Dataframe: Skater and goalie dataframes.
     """
-    raw_teams: list[dict] = scraper.scrape_raw(
-        endpoint="TeamsStandingsNow", scrape_args={}
-    )["standings"]
-    teams: list[str] = [rt["teamAbbrev"]["default"] for rt in raw_teams]
+    teams: list[str] = scrape_teams(scraper=scraper)
 
     skaters: list = []
     goalies: list = []
@@ -70,7 +74,34 @@ def scrape_players(
     return pd.DataFrame.from_dict(skaters), pd.DataFrame.from_dict(goalies)
 
 
+def scrape_ids_team_season(
+    scraper: NHLScraper, team: str, season: str, gts: list[int] = [1, 2, 3]
+) -> list[str]:
+    games: list = scraper.scrape_raw(
+        endpoint="ScheduleTeamSeason", scrape_args={"team": team, "season": season}
+    )["games"]
+    games = list(filter(lambda d: d["gameType"] in gts, games))
+    games_ids: list = [game["id"] for game in games]
+
+    return games_ids
+
+
+def scrape_ids_season(
+    scraper: NHLScraper, season: str, gts: list[int] = [1, 2, 3]
+) -> list[str]:
+    teams: list[str] = scrape_teams(scraper=scraper)
+    ids: list[str] = []
+
+    for team in teams:
+        ids.extend(
+            scrape_ids_team_season(scraper=scraper, team=team, season=season, gts=gts)
+        )
+    return list(set(ids))
+
+
 # scraper = NHLScraper()
+# ids = scrape_ids_season(scraper, "20232024", gts=[2])
+# print(len(ids))
 # sk, gl = scrape_players(scraper=scraper, season="20232024")
 # print(sk.head())
 # print("Done")
