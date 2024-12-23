@@ -1,6 +1,0 @@
-Player: /v1/player/{player}/landing
-TeamsStandingsNow: /v1/standings/now
-TeamStatsNow: /v1/club-stats/{team}/now
-Team: /v1/club-stats/{team}/{season}/{game_type}
-PlayByPlay: /v1/gamecenter/{game-id}/play-by-play
-ScheduleTeamSeason: /v1/club-schedule-season/{team}/{season}
