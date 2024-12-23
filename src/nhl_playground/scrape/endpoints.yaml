@@ -5,3 +5,4 @@ Team: /v1/club-stats/{team}/{season}/{game_type}
 PlayByPlay: /v1/gamecenter/{game-id}/play-by-play
 ScheduleTeamSeason: /v1/club-schedule-season/{team}/{season}
 TeamSeasonStats: /v1/club-stats/{team}/{season}/{game-type}
+TeamInfo: /stats/rest/en/team

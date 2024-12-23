@@ -1,6 +1,6 @@
 import pandas as pd
 from nhl_playground.scrape.scraper import NHLScraper
-from typing import Any
+from typing import Any, Tuple
 
 
 def fix_names(data: dict) -> dict:
@@ -20,7 +20,7 @@ def fix_names(data: dict) -> dict:
 
 def scrape_players_team(
     scraper: NHLScraper, team: str, season: str, gt: str = "2"
-) -> (list, list):
+) -> Tuple[list, list]:
     """Scrapes all player data from one team.
 
     Args:
@@ -44,14 +44,15 @@ def scrape_players_team(
 def scrape_teams_abbrev(scraper: NHLScraper) -> list[str]:
     """Scrapes team abbreviations."""
     raw_teams: list[dict] = scraper.scrape_raw(
-        endpoint="TeamsStandingsNow", scrape_args={}
-    )["standings"]
-    return [rt["teamAbbrev"]["default"] for rt in raw_teams]
+        endpoint="TeamInfo", scrape_args={}, overwrite_base="https://api.nhle.com"
+    )["data"]
+
+    return [rt["rawTricode"] for rt in raw_teams]
 
 
 def scrape_players(
     scraper: NHLScraper, season: str, gt: str = "2"
-) -> (pd.DataFrame, pd.DataFrame):
+) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """Scrapes data of all players from set season. Returns data as skater and goalie dataframes.
 
     Args:
@@ -95,11 +96,33 @@ def scrape_ids_season(
     """Scrapes IDs of all games in a season"""
     teams_abbrev: list[str] = scrape_teams_abbrev(scraper=scraper)
     ids: list[str] = [
-        scrape_ids_team_season(scraper=scraper, team=team, season=season, gts=gts)
+        id_
         for team in teams_abbrev
+        for id_ in scrape_ids_team_season(
+            scraper=scraper, team=team, season=season, gts=gts
+        )
     ]
 
     return list(set(ids))
+
+
+def scrape_pbp(scraper: NHLScraper, game_id: str) -> dict[str, Any]:
+    """Scrapes PbP data."""
+    raw_pbp: dict[str, Any] = scraper.scrape_raw(
+        endpoint="PlayByPlay", scrape_args={"game-id": game_id}
+    )
+    raw_pbp = {
+        "plays": raw_pbp["plays"],
+        "homeTeam": raw_pbp["homeTeam"],
+        "awayTeam": raw_pbp["awayTeam"],
+    }
+    raw_pbp["plays"] = [
+        play | {"prevDescKey": raw_pbp["plays"][i - 1]["typeDescKey"]}
+        if i > 0
+        else play
+        for i, play in enumerate(raw_pbp["plays"])
+    ]
+    return raw_pbp
 
 
 def scrape_team_stats_seasons(

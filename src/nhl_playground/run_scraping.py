@@ -27,6 +27,7 @@ def main(args):
     scraper = NHLScraper()
     match args.parsefn:
         case "team_stats":
+            print(f"Starting to parse {args.parsefn}")
             stats = scrape_team_stats_seasons(
                 scraper=scraper, seasons=["20222023", "20212022"]
             )
