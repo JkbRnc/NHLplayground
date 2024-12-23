@@ -10,8 +10,26 @@ python = "^3.12"
 pandas = "^2.2.3"
 pyyaml = "^6.0.2"
 requests = "^2.32.3"
+jupyter = "^1.1.1"
+pip = "^24.3.1"
+scikit-learn = "^1.5.2"
 
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.mypy]
+plugins = ["pydantic.mypy"]
+warn_return_any = true          # Warn on functions that return Any and have another return type in their signature
+warn_unused_ignores = true      # Warns about unneeded # type: ignore comments.
+warn_unused_configs = true      # Wanrs about unused mypy configurations in modules.
+disallow_untyped_defs = true    # Disallow defining functions without type annotations
+disallow_any_unimported = false  # Disallow using Any types from unfollowed imports
+check_untyped_defs = true       # Type-checks the interior of functions without type annotations.
+ignore_missing_imports = false   # Ignores missing stubs. Optional, use it if you want to avoid errors on missing stubs.
+
+
+[[tool.mypy.overrides]]    
+module = ["pandas", "nhl_playground.*", "requests", "yaml"]  
+ignore_missing_imports = true
