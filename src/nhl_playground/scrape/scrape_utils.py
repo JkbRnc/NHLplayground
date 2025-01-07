@@ -1,6 +1,7 @@
 import logging
 from os import remove
 from os.path import exists
+from typing import Any
 
 
 def setup_logger(
@@ -39,3 +40,19 @@ def setup_logger(
         logger.addHandler(streamHandler)
 
     return logger
+
+
+def remove_defaults(
+    data: dict[str, Any], cols: list[str] = ["firstName", "lastName"]
+) -> dict:
+    """Preprocessing function to extract names from raw data.
+
+    Args:
+        data (dict): Raw player data.
+
+    Returns:
+        dict: Raw player data with fixed names.
+    """
+    for col in cols:
+        data[col] = data[col]["default"]
+    return data
