@@ -11,7 +11,7 @@ The final project should include all neccesary tools to scrape data using the of
 
 ## Usage
 
-Current version supports team stats scraping. Simply run `poetry run python src/nhl_playground/run_scraping.py --save --filename "<filename-path>"` to scrape team stats from 2021-2023 (including postseason) and save as csv file.
+Current version supports team stats scraping. Simply run `poetry run python src/nhl_playground/run_scraping.py --save --filepath "<filename-path>"` to scrape team stats from 2021-2023 (including postseason) and save as csv file.
 
 ## Status
 
@@ -24,7 +24,6 @@ Current version supports team stats scraping. Simply run `poetry run python src/
 
 ### TODO
 
-- PbP scraping
 - Simple model based on TeamStats scraping
 
 ### DONE
@@ -32,3 +31,4 @@ Current version supports team stats scraping. Simply run `poetry run python src/
 - TeamStats scraping
 - Scraper base class
 - Player stats scraper
+- PbP scraping
