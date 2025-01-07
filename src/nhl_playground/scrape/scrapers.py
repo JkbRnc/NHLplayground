@@ -62,11 +62,15 @@ class BaseScraper:
         return [rt["rawTricode"] for rt in raw_teams]
 
     def scrape(self, season: str) -> dict[str, Any]:
+        """Base method for scraping. All scrapers must implement this method."""
         raise NotImplementedError
 
 
 class TeamStatsScraper(BaseScraper):
+    """Simple scraper for obtaining team statistics."""
+
     def scrape(self, season: str) -> dict[str, Any]:
+        """Scrapers team stats as a raw data. Returns dictionary with season, gameType, skaters and goalies data."""
         stats_raw = {
             team: self._scrape_raw(
                 endpoint="TeamSeasonStats",
@@ -88,6 +92,8 @@ class TeamStatsScraper(BaseScraper):
 
 
 class PlayerScraper(BaseScraper):
+    """Scraper used for obtaining player data."""
+
     def scrape_players_per_team(
         self, team_abbrev: str, season: str, gts: list[int] = [1, 2, 3]
     ) -> dict[str, Any]:
@@ -107,7 +113,7 @@ class PlayerScraper(BaseScraper):
         return {"skaters": skaters, "goalies": goalies}
 
     def scrape(self, season: str) -> dict[str, Any]:
-        """Scrapes all player data from set season."""
+        """Scrapes all player data from set season. Returns dictionary containing skaters and goalies data."""
         players: list[dict[str, Any]] = [
             self.scrape_players_per_team(team, season) for team in self.teams_abbrev
         ]
@@ -122,7 +128,10 @@ class PlayerScraper(BaseScraper):
 
 
 class PbPScraper(BaseScraper):
+    """Scraper for Play-by-Play data."""
+
     def scrape_pbp_by_game_id(self, game_id: str) -> dict[str, Any]:
+        """Scrapes PbP data for a given game ID."""
         raw_pbp: dict[str, Any] = self._scrape_raw(
             endpoint="PlayByPlay", scrape_args={"game-id": game_id}
         )
@@ -142,7 +151,7 @@ class PbPScraper(BaseScraper):
     def scrape_ids_team_season(
         self, team: str, season: str, gts: list[int] = [1, 2, 3]
     ) -> list[str]:
-        """Scrapes IDs of all games in a seaso of given team"""
+        """Scrapes IDs of all games in a season of given team."""
         games: list = self._scrape_raw(
             endpoint="ScheduleTeamSeason", scrape_args={"team": team, "season": season}
         )["games"]
@@ -154,7 +163,7 @@ class PbPScraper(BaseScraper):
     def scrape_ids_for_season(
         self, season: str, gts: list[int] = [1, 2, 3]
     ) -> list[str]:
-        """Scrapes IDs of all games in a season"""
+        """Scrapes IDs of all games in a season."""
         ids: list[str] = [
             id_
             for team in self.teams_abbrev
@@ -164,7 +173,7 @@ class PbPScraper(BaseScraper):
         return list(set(ids))
 
     def scrape(self, season: str) -> dict[str, Any]:
-        """Scrapes PbP data"""
+        """Scrapes PbP all data."""
         season_ids = self.scrape_ids_for_season(season=season)
         raw_pbp = {
             game_id: self.scrape_pbp_by_game_id(game_id) for game_id in season_ids

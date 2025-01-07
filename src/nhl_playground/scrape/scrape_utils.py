@@ -1,10 +1,7 @@
 import logging
 from os import remove
 from os.path import exists
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from typing import Any
+from typing import Any
 
 
 def setup_logger(
