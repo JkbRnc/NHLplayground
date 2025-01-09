@@ -143,7 +143,7 @@ class PbPScraper(BaseScraper):
         raw_pbp["plays"] = [
             play | {"prevDescKey": raw_pbp["plays"][i - 1]["typeDescKey"]}
             if i > 0
-            else play
+            else play | {"prevDescKey": "None"}
             for i, play in enumerate(raw_pbp["plays"])
         ]
         return raw_pbp
