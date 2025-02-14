@@ -140,12 +140,7 @@ class PbPScraper(BaseScraper):
             "homeTeam": raw_pbp["homeTeam"],
             "awayTeam": raw_pbp["awayTeam"],
         }
-        raw_pbp["plays"] = [
-            play | {"prevDescKey": raw_pbp["plays"][i - 1]["typeDescKey"]}
-            if i > 0
-            else play | {"prevDescKey": "None"}
-            for i, play in enumerate(raw_pbp["plays"])
-        ]
+
         return raw_pbp
 
     def scrape_ids_team_season(
