@@ -16,9 +16,13 @@ class AddPrevPlayName(Enrichment):
 
     def __call__(self, raw_data: dict[str, Any]) -> dict[str, Any]:
         raw_data["plays"] = [
-            play | {"prevDescKey": raw_data["plays"][i - 1]["typeDescKey"]}
+            play
+            | {
+                "prevDescKey": raw_data["plays"][i - 1]["typeDescKey"],
+                "prevTypeCode": raw_data["plays"][i - 1]["typeCode"],
+            }
             if i > 0
-            else play | {"prevDescKey": "None"}
+            else play | {"prevDescKey": None, "prevTypeCode": None}
             for i, play in enumerate(raw_data["plays"])
         ]
         return raw_data
