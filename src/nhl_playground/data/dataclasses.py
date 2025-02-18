@@ -13,10 +13,16 @@ class SOG:
     sortOrder: int
     timeInPeriod: str
     timeRemaining: str
-    typeCode: int
-    typeDescKey: str
-    prevDescKey: str
     isGoal: bool
+    xCoord: int
+    yCoord: int
+    zoneCode: str
+    shotType: str
+    shootingPlayerId: int
+    goalieInNetId: int
+    eventOwnerTeamId: int
+    prevDescKey: str | None = None
+    prevTypeCode: int | None = None
 
 
 @dataclass
@@ -32,6 +38,7 @@ class Play:
     typeCode: int
     typeDescKey: str
     prevDescKey: str | None = None
+    prevTypeCode: str | None = None
     other: dict[str, Any] | None = None
 
 
