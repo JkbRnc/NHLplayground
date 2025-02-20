@@ -21,6 +21,8 @@ class SOG:
     shootingPlayerId: int
     goalieInNetId: int
     eventOwnerTeamId: int
+
+    # Values add by enrichments
     prevDescKey: str | None = None
     prevTypeCode: int | None = None
 
@@ -37,9 +39,11 @@ class Play:
     timeRemaining: str
     typeCode: int
     typeDescKey: str
-    prevDescKey: str | None = None
-    prevTypeCode: str | None = None
     other: dict[str, Any] | None = None
+
+    # Values added by enrichments
+    prevDescKey: str | None = None
+    prevTypeCode: int | None = None
 
 
 @dataclass

@@ -32,6 +32,7 @@ class GameLoader:
             "typeCode",
             "typeDescKey",
             "prevDescKey",
+            "prevTypeCode",
         },
     ) -> Play:
         """Loads play into Play dataclass."""
