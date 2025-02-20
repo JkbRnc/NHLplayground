@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import argparse
 from typing import Any
 from csv import DictWriter
@@ -31,7 +33,14 @@ def save_json(filename: str, data: dict[str, Any]) -> None:
         json.dump(data, outfile)
 
 
-def main(args: Any) -> None:
+def main(args: argparse.Namespace) -> None:
+    """
+    This script runs basic data scraping.
+
+    Args:
+        args (argparse.Namespace): Commandline arguments for scraping script. Supports PbP data scraping
+                                    and Team statistics scraping for a given season. Additionaly allows saving data as json.
+    """
     print(f"Starting to parse {args.parsefn}")
 
     scrapers_mapping = {"team_stats": TeamStatsScraper, "pbp": PbPScraper}
