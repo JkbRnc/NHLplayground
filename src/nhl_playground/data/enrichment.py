@@ -18,11 +18,15 @@ class AddPrevPlayName(Enrichment):
         raw_data["plays"] = [
             play
             | {
-                "prevDescKey": raw_data["plays"][i - 1]["typeDescKey"],
-                "prevTypeCode": raw_data["plays"][i - 1]["typeCode"],
+                "prevDescKey": raw_data["plays"][i - 1].get("typeDescKey"),
+                "prevTypeCode": raw_data["plays"][i - 1].get("typeCode"),
             }
             if i > 0
-            else play | {"prevDescKey": None, "prevTypeCode": None}
+            else play
+            | {
+                "prevDescKey": None,
+                "prevTypeCode": None,
+            }
             for i, play in enumerate(raw_data["plays"])
         ]
         return raw_data
