@@ -1,6 +1,11 @@
 from nhl_playground.data.dataclasses import Play, SOG
 
 
+def time2sec(time_str: str) -> int:
+    time = tuple(int(t) for t in time_str.split(":"))
+    return 60 * time[0] + time[1]
+
+
 def play2sog(play: Play) -> SOG:
     """Loads a play to SOG dataclass."""
     return SOG(
@@ -9,8 +14,8 @@ def play2sog(play: Play) -> SOG:
         periodNumber=play.periodDescriptor["number"],
         periodType=play.periodDescriptor["periodType"],
         sortOrder=play.sortOrder,
-        timeInPeriod=play.timeInPeriod,
-        timeRemaining=play.timeRemaining,
+        timeInPeriod=time2sec(play.timeInPeriod),
+        timeRemaining=time2sec(play.timeRemaining),
         prevDescKey=play.prevDescKey,
         prevTypeCode=play.prevTypeCode,
         isGoal=play.typeDescKey == "goal",

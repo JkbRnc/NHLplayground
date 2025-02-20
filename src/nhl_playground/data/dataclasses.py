@@ -12,7 +12,7 @@ class SOG:
     periodNumber: int
     periodType: str
     sortOrder: int
-    timeInPeriod: str
+    timeInPeriod: int
     timeRemaining: str
     isGoal: bool
     xCoord: int
