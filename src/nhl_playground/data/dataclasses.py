@@ -9,7 +9,8 @@ class SOG:
 
     eventId: int
     homeTeamDefendingSide: str
-    periodDescriptor: dict[str, str | int]
+    periodNumber: int
+    periodType: str
     sortOrder: int
     timeInPeriod: str
     timeRemaining: str
