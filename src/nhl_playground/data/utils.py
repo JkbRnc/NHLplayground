@@ -6,7 +6,8 @@ def play2sog(play: Play) -> SOG:
     return SOG(
         eventId=play.eventId,
         homeTeamDefendingSide=play.homeTeamDefendingSide,
-        periodDescriptor=play.periodDescriptor,
+        periodNumber=play.periodDescriptor["number"],
+        periodType=play.periodDescriptor["periodType"],
         sortOrder=play.sortOrder,
         timeInPeriod=play.timeInPeriod,
         timeRemaining=play.timeRemaining,
