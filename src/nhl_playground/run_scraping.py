@@ -5,6 +5,7 @@ from typing import Any
 from csv import DictWriter
 import json
 from nhl_playground.scrape.scrapers import TeamStatsScraper, PbPScraper
+from time import time
 
 
 def setup_parser() -> argparse.ArgumentParser:
@@ -42,6 +43,7 @@ def main(args: argparse.Namespace) -> None:
                                     and Team statistics scraping for a given season. Additionaly allows saving data as json.
     """
     print(f"Starting to parse {args.parsefn}")
+    start = time()
 
     scrapers_mapping = {"team_stats": TeamStatsScraper, "pbp": PbPScraper}
     scraper = scrapers_mapping.get(args.parsefn)
@@ -51,11 +53,13 @@ def main(args: argparse.Namespace) -> None:
     else:
         stats = {}
 
+    end = time()
     if args.save:
         # save_csv(args.filepath, stats)
         save_json(args.filepath, stats)
     else:
         print(len(stats.keys()))
+    print(f"Scraping succesfully finished. Elapsed time {end - start}s.")
 
 
 if __name__ == "__main__":
