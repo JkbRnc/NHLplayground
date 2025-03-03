@@ -1,7 +1,9 @@
-from nhl_playground.data.dataclasses import Game, Play
 from typing import Any
+
 from numpy import array, concatenate
 from numpy.typing import ArrayLike
+
+from nhl_playground.data.dataclasses import Game, Play
 
 
 class GameLoader:

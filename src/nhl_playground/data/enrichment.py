@@ -25,7 +25,7 @@ class AddPrevPlayName(Enrichment):
             else play
             | {
                 "prevDescKey": None,
-                "prevTypeCode": None,
+                "prevTypeCode": -1,
             }
             for i, play in enumerate(raw_data["plays"])
         ]

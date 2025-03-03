@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import Any
+
 from numpy import ndarray
 
 
@@ -20,8 +21,9 @@ class SOG:
     zoneCode: str
     shotType: str
     shootingPlayerId: int
-    goalieInNetId: int
+    goalieInNetId: int | None
     eventOwnerTeamId: int
+    situationCode: int
 
     # Values add by enrichments
     prevDescKey: str | None = None

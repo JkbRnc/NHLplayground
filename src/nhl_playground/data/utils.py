@@ -25,6 +25,7 @@ def play2sog(play: Play) -> SOG:
         shotType=play.other["details"].get("shotType"),  #
         shootingPlayerId=play.other["details"].get("shootingPlayerId")
         or play.other["details"].get("scoringPlayerId"),
-        goalieInNetId=play.other["details"].get("goalieInNetId"),
+        goalieInNetId=play.other["details"].get("goalieInNetId", -1),
         eventOwnerTeamId=play.other["details"]["eventOwnerTeamId"],
+        situationCode=play.other["situationCode"],
     )
