@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 import argparse
-from typing import Any
-from csv import DictWriter
 import json
-from nhl_playground.scrape.scrapers import TeamStatsScraper, PbPScraper
+from csv import DictWriter
 from time import time
+from typing import Any
+
+from nhl_playground.scrape.scrapers import PbPScraper, TeamStatsScraper
 
 
 def setup_parser() -> argparse.ArgumentParser:
