@@ -1,14 +1,18 @@
+from abc import ABC, abstractclassmethod
+from typing import Any, TypeVar
+
+from numpy import append, array, frompyfunc
 from pandas import DataFrame
+
 from nhl_playground.data.dataclasses import Game, Play
-from numpy import frompyfunc, array, append
-from typing import TypeVar, Any
-from nhl_playground.data.enrichment import Enrichment
 from nhl_playground.data.dataloaders import BaseLoader
+from nhl_playground.data.enrichment import AddPrevPlayName, Enrichment
+from nhl_playground.data.utils import play2sog
 
 T = TypeVar("T")
 
 
-class BasePreprocessor:
+class BasePreprocessor(ABC):
     """Base class for preprocessors."""
 
     def __init__(self, loader: BaseLoader | None = None) -> None:
@@ -26,9 +30,16 @@ class BasePreprocessor:
         """Loader setter."""
         self._loader = loader
 
-    def add_enrichment(self, enrichment: Enrichment) -> None:
+    def add_enrichment(self, enrichment: Enrichment | str) -> None:
         """Appends enrichment to the sequence."""
-        self.enrichments = append(self.enrichments, enrichment)
+        if isinstance(enrichment, str):
+            enrichment_mapping = {"add_prev_play_name": AddPrevPlayName}
+            if e := enrichment_mapping.get(enrichment):
+                self.enrichments = append(self.enrichments, e())
+            else:
+                raise ValueError("Invalid enrichment name.")
+        else:
+            self.enrichments = append(self.enrichments, enrichment())
 
     def apply_enrichments(self, raw_data: dict[str, Any]) -> dict[str, Any]:
         """Applies a sequence of added enrichments to input data."""
@@ -37,12 +48,15 @@ class BasePreprocessor:
             res = fn(raw_data)
         return res
 
+    @abstractclassmethod
     def format(self, obj: T) -> DataFrame:
         """Formats input object into pd.DataFrame."""
-        raise NotImplementedError
+        pass
 
 
 class XGPreprocessor(BasePreprocessor):
+    """Preprocessor for xG models."""
+
     def __init__(self) -> None:
         super().__init__(self)
         pass
@@ -60,9 +74,18 @@ class XGPreprocessor(BasePreprocessor):
 
         return game
 
-    def format(self, game: Game) -> DataFrame:
-        """TODO."""
-        return DataFrame(game)
+    def format(self, raw: dict[str, Any]) -> DataFrame:
+        """Formats raw data to Pandas DataFrame while applying all enrichments and SOG filtering."""
+        enriched_raw = {key: self.apply_enrichments(game) for key, game in raw.items()}
+        self.loader.load(enriched_raw)
+
+        enriched_games = [
+            play2sog(play)
+            for game in self.loader
+            for play in self._filter_shots(game).plays
+        ]
+
+        return DataFrame(enriched_games)
 
 
 # (
