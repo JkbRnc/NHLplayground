@@ -1,13 +1,15 @@
 import logging
+from abc import ABC, abstractclassmethod
+from typing import Any
 
 import requests
 import yaml
 from requests import Response
-from nhl_playground.scrape.scrape_utils import setup_logger, remove_defaults
-from typing import Any
+
+from nhl_playground.scrape.utils import remove_defaults, setup_logger
 
 
-class BaseScraper:
+class BaseScraper(ABC):
     """NHL scraper class using free api. Provides method for raw data scraping."""
 
     BASE_API_URL: str = "https://api-web.nhle.com"
@@ -61,9 +63,10 @@ class BaseScraper:
 
         return [rt["rawTricode"] for rt in raw_teams]
 
+    @abstractclassmethod
     def scrape(self, season: str) -> dict[str, Any]:
         """Base method for scraping. All scrapers must implement this method."""
-        raise NotImplementedError
+        pass
 
 
 class TeamStatsScraper(BaseScraper):
