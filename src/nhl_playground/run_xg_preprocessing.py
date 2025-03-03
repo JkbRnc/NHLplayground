@@ -1,10 +1,15 @@
 from __future__ import annotations
+
 import argparse
 import json
+from dataclasses import dataclass
+from time import time
+
+from numpy import sum
+from pandas import DataFrame, isna
+
 from nhl_playground.data.dataloaders import PbPDataLoader
 from nhl_playground.data.preprocessing import XGPreprocessor
-from pandas import DataFrame
-from dataclasses import dataclass
 
 
 @dataclass
@@ -54,6 +59,7 @@ def main(variables: InputVariables) -> None:
     Enrichments can be passed as arguments with '-e' switch.
     For all possible enrichment keyword options check README.
     """
+    start = time()
     # Set up preprocessor
     preprocessor = XGPreprocessor()
     preprocessor.loader = PbPDataLoader()
@@ -69,11 +75,28 @@ def main(variables: InputVariables) -> None:
         raw_data = json.load(input_file)
     data: DataFrame = preprocessor.format(raw_data)
 
+    end = time()
     # Save data as csv or prints first 10 rows
     if variables.save:
         data.to_csv(path_or_buf=variables.outfile, sep=";")
+        print(f"Data saved to {variables.outfile}")
     else:
         print(data.head())
+        output = [
+            [
+                col,
+                len(data) - sum(isna(data[col])),
+                data[col].nunique(),
+                str(data[col].dtype),
+            ]
+            for col in data.columns
+        ]
+        print(
+            DataFrame(
+                output, columns=["name", "non-null", "unique", "dtype"]
+            ).set_index("name")
+        )
+    print(f"Elapsed time: {end - start}s")
 
 
 if __name__ == "__main__":
@@ -83,6 +106,6 @@ if __name__ == "__main__":
         save=args.save,
         infile=args.input,
         outfile=args.output,
-        enrichment=args.enrichment,
+        enrichment=args.enrichment or [],
     )
     main(variables)
