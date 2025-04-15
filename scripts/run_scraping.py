@@ -10,6 +10,7 @@ from nhl_playground.scrape.scrapers import PbPScraper, TeamStatsScraper
 
 
 def setup_parser() -> argparse.ArgumentParser:
+    """Sets up the argument parser for the script."""
     parser = argparse.ArgumentParser()
 
     parser.add_argument("--save", default=False, action=argparse.BooleanOptionalAction)
@@ -36,12 +37,10 @@ def save_json(filename: str, data: dict[str, Any]) -> None:
 
 
 def main(args: argparse.Namespace) -> None:
-    """
-    This script runs basic data scraping.
+    """This script runs basic data scraping.
 
     Args:
-        args (argparse.Namespace): Commandline arguments for scraping script. Supports PbP data scraping
-                                    and Team statistics scraping for a given season. Additionaly allows saving data as json.
+        args (argparse.Namespace): Commandline arguments for scraping script. Supports PbP data scraping and Team statistics scraping for a given season. Additionally allows saving data as json.
     """
     print(f"Starting to parse {args.parsefn}")
     start = time()
@@ -56,11 +55,10 @@ def main(args: argparse.Namespace) -> None:
 
     end = time()
     if args.save:
-        # save_csv(args.filepath, stats)
         save_json(args.filepath, stats)
     else:
         print(len(stats.keys()))
-    print(f"Scraping succesfully finished. Elapsed time {end - start}s.")
+    print(f"Scraping successfully finished. Elapsed time {end - start}s.")
 
 
 if __name__ == "__main__":
