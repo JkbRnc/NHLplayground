@@ -1,9 +1,11 @@
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from numpy import array, concatenate
-from numpy.typing import ArrayLike
 
 from nhl_playground.data.dataclasses import Game, Play
+
+if TYPE_CHECKING:
+    from numpy.typing import ArrayLike
 
 
 class GameLoader:
@@ -24,7 +26,7 @@ class GameLoader:
     def load_play(
         cls,
         raw_play: dict[str, Any],
-        mutual_keys: set[str] = {
+        mutual_keys: tuple[str] = (
             "eventId",
             "homeTeamDefendingSide",
             "periodDescriptor",
@@ -35,24 +37,27 @@ class GameLoader:
             "typeDescKey",
             "prevDescKey",
             "prevTypeCode",
-        },
+        ),
     ) -> Play:
         """Loads play into Play dataclass."""
-        other_keys = {k for k in raw_play.keys() if k not in mutual_keys}
+        other_keys = {k for k in raw_play if k not in mutual_keys}
 
         mutual_data = {k: raw_play.get(k) for k in mutual_keys}
         other = {k: raw_play.get(k) for k in other_keys}
-        play = Play(other=other, **mutual_data)
-        return play
+        return Play(other=other, **mutual_data)
 
 
 class BaseLoader:
+    """Base class for data loaders."""
+
     def load(self, raw_data: dict[str, Any]) -> None:
         """Abstract method for loaders."""
         raise NotImplementedError
 
 
 class PbPDataLoader(BaseLoader):
+    """Play-by-play data loader."""
+
     def __init__(self):
         """PbP loader constructor."""
         self.games: ArrayLike[Game] = array([])
@@ -69,9 +74,7 @@ class PbPDataLoader(BaseLoader):
 
     def load(self, raw_games: dict[str, Any]) -> None:
         """Loads games from dictionary."""
-        raw_games_list = [
-            game | {"key": key} for key, game in array(list(raw_games.items()))
-        ]
+        raw_games_list = [game | {"key": key} for key, game in array(list(raw_games.items()))]
         games = array([GameLoader.load_game(raw_game) for raw_game in raw_games_list])
 
         self.games = concatenate((self.games, games))

@@ -51,15 +51,14 @@ class BasePreprocessor(ABC):
     @abstractclassmethod
     def format(self, obj: T) -> DataFrame:
         """Formats input object into pd.DataFrame."""
-        pass
 
 
 class XGPreprocessor(BasePreprocessor):
     """Preprocessor for xG models."""
 
     def __init__(self) -> None:
+        """XG Preprocessor constructor."""
         super().__init__(self)
-        pass
 
     @staticmethod
     def _is_shot(play: Play) -> bool:
@@ -79,46 +78,6 @@ class XGPreprocessor(BasePreprocessor):
         enriched_raw = {key: self.apply_enrichments(game) for key, game in raw.items()}
         self.loader.load(enriched_raw)
 
-        enriched_games = [
-            play2sog(play)
-            for game in self.loader
-            for play in self._filter_shots(game).plays
-        ]
+        enriched_games = [play2sog(play) for game in self.loader for play in self._filter_shots(game).plays]
 
         return DataFrame(enriched_games)
-
-
-# (
-#     {
-#         "eventId": 381,
-#         "periodDescriptor": {
-#             "number": 1,
-#             "periodType": "REG",
-#             "maxRegulationPeriods": 3,
-#         },
-#         "timeInPeriod": "18:02",
-#         "timeRemaining": "01:58",
-#         "situationCode": "1551",
-#         "homeTeamDefendingSide": "left",
-#         "typeCode": 505,
-#         "typeDescKey": "goal",
-#         "sortOrder": 222,
-#         "details": {
-#             "xCoord": 30,
-#             "yCoord": 7,
-#             "zoneCode": "O",
-#             "shotType": "slap",
-#             "scoringPlayerId": 8480035,
-#             "scoringPlayerTotal": 2,
-#             "assist1PlayerId": 8482671,
-#             "assist1PlayerTotal": 7,
-#             "eventOwnerTeamId": 7,
-#             "goalieInNetId": 8479406,
-#             "awayScore": 0,
-#             "homeScore": 1,
-#             "highlightClipSharingUrl": "https://nhl.com/video/min-buf-jokiharju-scores-goal-against-wild-6340906550112",
-#             "highlightClip": 6340906550112,
-#         },
-#         "pptReplayUrl": "https://wsr.nhle.com/sprites/20232024/2023020204/ev381.json",
-#     },
-# )

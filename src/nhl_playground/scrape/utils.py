@@ -42,13 +42,12 @@ def setup_logger(
     return logger
 
 
-def remove_defaults(
-    data: dict[str, Any], cols: list[str] = ["firstName", "lastName"]
-) -> dict:
+def remove_defaults(data: dict[str, Any], cols: tuple[str] = ("firstName", "lastName")) -> dict:
     """Preprocessing function to extract names from raw data.
 
     Args:
-        data (dict): Raw player data.
+        data (dict[str, Any]): Raw player data.
+        cols (tuple[str], optional): Column names to extract. Defaults to ("firstName", "lastName").
 
     Returns:
         dict: Raw player data with fixed names.

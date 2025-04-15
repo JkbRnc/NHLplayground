@@ -19,6 +19,67 @@ scikit-learn = "^1.5.2"
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
+[tool.ruff]
+line-length = 120
+exclude = [
+    # exclude the migrated as-soccer-fitness-calculator code
+    "src/soccer_fit_fitness_calculator/message_handler/*",
+    "tests/unit/*"
+]
+
+[tool.ruff.lint]
+extend-safe-fixes = ["TCH",]
+select = [
+    "A",       # prevent using keywords that clobber python builtins
+    "B",       # bugbear: security warnings
+    "C",       # Mccabe complexity
+    "D",       # pydocstyle
+    "E",       # pycodestyle
+    "F",       # pyflakes
+    "I",       # Isort. Import order
+    "W",       # Warnings
+    "UP",      # alert you when better syntax is available in your python version
+    "ARG",     # flake8-Unused-Arguments
+    "PIE",     # flake8-pie
+    "RET",     # flake8-return
+    "RUF",     # the ruff developer's own rules
+    "SIM",     # flake8-Simplify
+    "TCH",     # Flake8-Type-Checking
+    "COM",     # Flake8-Commas
+    "ERA",     # Eradicate dead code
+    "PLR1714", # Merge repeated comparisons using a set
+    "PLR5501", # Use elif instead of else then if, to reduce indentation
+    "TID252"   # Prefer absolute imports over relative imports from parent modules
+]
+
+ignore = [
+    "COM812",# Supress because it sometimes conflicts with the formatter.
+    "E501",  # Supress line-too-long warnings: they are handled by the formater.
+    "E712",  # Allow using if x == False, as it's not always equivalent to if x.
+    "UP017", # Allow timezone.utc instead of datetime.UTC.
+    "E731",  # Do not assign a lambda expression, use a def
+    "B008",  # Do not perform function calls in argument defaults,
+    "D100",  # Missing docstring in public module
+    "D104",  # Missing docstring in public package
+]
+pydocstyle.convention = "google"  # Enforce Google docstring style
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = [
+    "D",        # Ignore docstring requirements for tests
+    "ARG001",   # Ignore unused arguments in tests
+]
+
+[tool.ruff.format]
+docstring-code-format = true
+quote-style = "double"
+indent-style = "space"
+
+[tool.ruff.lint.mccabe]
+# Flag errors (`C901`) whenever the complexity level exceeds 5.
+max-complexity = 5
+
+
 [tool.mypy]
 plugins = ["pydantic.mypy"]
 warn_return_any = true          # Warn on functions that return Any and have another return type in their signature
