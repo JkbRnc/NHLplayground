@@ -1,0 +1,3 @@
+xg:
+  - xgboost
+  - histgrad_boosting
