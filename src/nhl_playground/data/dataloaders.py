@@ -1,12 +1,10 @@
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Any
+from collections.abc import Iterator
+from typing import Any
 
-from numpy import array, concatenate
+from numpy import array, concatenate, ndarray
 
 from nhl_playground.data.dataclasses import Game, Play
-
-if TYPE_CHECKING:
-    from numpy.typing import ArrayLike
 
 
 class GameLoader:
@@ -27,7 +25,7 @@ class GameLoader:
     def load_play(
         cls,
         raw_play: dict[str, Any],
-        mutual_keys: tuple[str] = (
+        mutual_keys: tuple[str, ...] = (
             "eventId",
             "homeTeamDefendingSide",
             "periodDescriptor",
@@ -43,13 +41,18 @@ class GameLoader:
         """Loads play into Play dataclass."""
         other_keys = {k for k in raw_play if k not in mutual_keys}
 
-        mutual_data = {k: raw_play.get(k) for k in mutual_keys}
-        other = {k: raw_play.get(k) for k in other_keys}
+        mutual_data: dict[str, Any] = {k: raw_play.get(k) for k in mutual_keys}
+        other: dict[str, Any] = {k: raw_play.get(k) for k in other_keys}
         return Play(other=other, **mutual_data)
 
 
-class BaseLoader(ABC):
+class BaseLoader(ABC, Iterator):
     """Base class for data loaders."""
+
+    @abstractmethod
+    def next(self) -> object:
+        """Returns next element in the iterator."""
+        raise NotImplementedError
 
     @abstractmethod
     def load(self, raw_data: dict[str, Any]) -> None:
@@ -60,17 +63,17 @@ class BaseLoader(ABC):
 class PbPDataLoader(BaseLoader):
     """Play-by-play data loader."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """PbP loader constructor."""
-        self.games: ArrayLike[Game] = array([])
+        self.games: ndarray = array([])
 
     def __getitem__(self, idx: int) -> Game | None:
         """Gets game based on index."""
         if abs(idx) > len(self.games):
             return None
-        return self.games[idx]
+        return self.games[idx]  # type: ignore[no-any-return]
 
-    def __len__(self):
+    def __len__(self) -> int:
         """Length attribute."""
         return len(self.games)
 

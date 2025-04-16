@@ -13,6 +13,9 @@ requests = "^2.32.3"
 jupyter = "^1.1.1"
 pip = "^24.3.1"
 scikit-learn = "^1.5.2"
+mypy = "^1.15.0"
+pydantic = "^2.11.3"
+ruff = "^0.11.5"
 
 
 [build-system]
@@ -23,8 +26,6 @@ build-backend = "poetry.core.masonry.api"
 line-length = 120
 exclude = [
     # exclude the migrated as-soccer-fitness-calculator code
-    "src/soccer_fit_fitness_calculator/message_handler/*",
-    "tests/unit/*"
 ]
 
 [tool.ruff.lint]

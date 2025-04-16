@@ -14,13 +14,13 @@ class SOG:
     periodType: str
     sortOrder: int
     timeInPeriod: int
-    timeRemaining: str
+    timeRemaining: int
     isGoal: bool
-    xCoord: int
-    yCoord: int
-    zoneCode: str
-    shotType: str
-    shootingPlayerId: int
+    xCoord: int | None
+    yCoord: int | None
+    zoneCode: str | None
+    shotType: str | None
+    shootingPlayerId: int | None
     goalieInNetId: int | None
     eventOwnerTeamId: int
     situationCode: int
@@ -42,7 +42,7 @@ class Play:
     timeRemaining: str
     typeCode: int
     typeDescKey: str
-    other: dict[str, Any] | None = None
+    other: dict[str, Any]
 
     # Values added by enrichments
     prevDescKey: str | None = None
@@ -54,9 +54,9 @@ class Game:
     """Game dataclass. Utilizes Play dataclass."""
 
     key: str
-    homeTeam: dict[str, Any]
-    awayTeam: dict[str, Any]
-    plays: ndarray[Play]
+    homeTeam: dict[str, int]
+    awayTeam: dict[str, int]
+    plays: ndarray
 
     @property
     def homeTeam_id(self) -> int:
@@ -72,4 +72,4 @@ class Game:
         """Gets play on a given index."""
         if abs(idx) > len(self.plays):
             return None
-        return self.plays[idx]
+        return self.plays[idx]  # type: ignore[no-any-return]
