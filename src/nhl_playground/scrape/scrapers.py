@@ -1,5 +1,5 @@
 import logging
-from abc import ABC, abstractclassmethod
+from abc import ABC, abstractmethod
 from typing import Any
 
 import requests
@@ -18,7 +18,7 @@ class BaseScraper(ABC):
 
     def __init__(self, erase: bool = True) -> None:
         """Initialize scraper."""
-        self._load_endpoints(path="src/nhl_playground/scrape/endpoints.yaml")
+        self._load_endpoints(path="config/scrape_endpoints.yaml")
         self.logger = setup_logger("scraperLogger", "scraper.log", erase=erase)
 
         self.teams_abbrev = self._scrape_teams_abbrev()
@@ -62,7 +62,7 @@ class BaseScraper(ABC):
 
         return [rt["rawTricode"] for rt in raw_teams]
 
-    @abstractclassmethod
+    @abstractmethod
     def scrape(self, season: str) -> dict[str, Any]:
         """Base method for scraping. All scrapers must implement this method."""
 

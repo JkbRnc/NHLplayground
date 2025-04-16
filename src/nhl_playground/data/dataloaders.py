@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Any
 
 from numpy import array, concatenate
@@ -47,9 +48,10 @@ class GameLoader:
         return Play(other=other, **mutual_data)
 
 
-class BaseLoader:
+class BaseLoader(ABC):
     """Base class for data loaders."""
 
+    @abstractmethod
     def load(self, raw_data: dict[str, Any]) -> None:
         """Abstract method for loaders."""
         raise NotImplementedError
